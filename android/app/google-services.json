@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "772795800484",
+    "firebase_url": "https://prototype-b138f.firebaseio.com",
+    "project_id": "prototype-b138f",
+    "storage_bucket": "prototype-b138f.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:772795800484:android:8e6796b1507989ec863f31",
+        "android_client_info": {
+          "package_name": "com.example.song_voter"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "772795800484-ider1e9qkgsevp7se04fvg7dq6b4heb7.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCvFy73WjrhZR5Ai7LhOLjStst5rNi-R4g"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "772795800484-ider1e9qkgsevp7se04fvg7dq6b4heb7.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
