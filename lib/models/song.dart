@@ -1,11 +1,11 @@
 class Song {
   String title;
-  int vote = 0;
+  int votes = 0;
 
-  Song({this.title, this.vote});
+  Song({this.title, this.votes});
 
   @override
   String toString() {
-    return 'name: ' + title + ', vote: ' + vote.toString();
+    return 'name: ' + title + ', vote: ' + votes.toString();
   }
 }

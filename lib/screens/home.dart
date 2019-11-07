@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:song_voter/models/song.dart';
 
@@ -7,26 +8,9 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  int _counter = 0;
-
-  void _incrementCounter() {
-    setState(() {
-      // This call to setState tells the Flutter framework that something has
-      // changed in this State, which causes it to rerun the build method below
-      // so that the display can reflect the updated values. If we changed
-      // _counter without calling setState(), then the build method would not be
-      // called again, and so nothing would appear to happen.
-      _counter++;
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
-    final songs = <Song>[
-      Song(title: 'Waltz in Tennessee'.toUpperCase(), vote: 0),
-      Song(title: 'Foxtrot Blue'.toUpperCase(), vote: 2)
-    ];
-
     return Scaffold(
       backgroundColor: Colors.orange[100],
       appBar: AppBar(
@@ -54,41 +38,66 @@ class _HomeScreenState extends State<HomeScreen> {
                 height: 30.0,
               ),
               Expanded(
-                child: ListView.builder(
-                  physics: BouncingScrollPhysics(),
-                  padding: EdgeInsets.only(left: 30.0, right: 30.0),
-                  itemCount: songs.length,
-                  itemBuilder: (BuildContext context, int index) {
-                    final song = songs[index];
-                    return GestureDetector(
-                      onTap: () {
-                        print('tapped...');
-                      },
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: <Widget>[
-                          Text(
-                            song.title,
-                            style: TextStyle(
-                                color: Colors.black54,
-                                fontSize: 24.0,
-                                fontWeight: FontWeight.normal),
-                          ),
-                          SizedBox(
-                            width: 25.0,
-                          ),
-                          Text(
-                            '${song.vote}',
-                            style: TextStyle(
-                                color: Colors.black54,
-                                fontSize: 24.0,
-                                fontWeight: FontWeight.normal),
-                          ),
-                        ],
-                      ),
-                    );
-                  },
-                ),
+                child: StreamBuilder(
+                    stream: Firestore.instance.collection('songs').snapshots(),
+                    builder: (context, snapshot) {
+                      if (!snapshot.hasData) {
+                        return const Text('Loading...');
+                      }
+
+                      return ListView.builder(
+                        physics: BouncingScrollPhysics(),
+                        padding: EdgeInsets.only(left: 30.0, right: 30.0),
+                        itemCount: snapshot.data.documents.length,
+                        itemBuilder: (context, index) {
+                          final DocumentSnapshot song =
+                              snapshot.data.documents[index];
+                          return GestureDetector(
+                            onTap: () {
+                              // song.reference
+                              //     .updateData({'votes': song['votes'] + 1});
+                              Firestore.instance
+                                  .runTransaction((transaction) async {
+                                DocumentSnapshot freshSnap =
+                                    await transaction.get(song.reference);
+                                await transaction.update(freshSnap.reference, {
+                                  'votes': freshSnap['votes'] + 1,
+                                });
+                              });
+                            },
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: <Widget>[
+                                Text(
+                                  song['title'],
+                                  style: TextStyle(
+                                      color: Colors.black54,
+                                      fontSize: 24.0,
+                                      fontWeight: FontWeight.normal),
+                                ),
+                                SizedBox(
+                                  width: 25.0,
+                                ),
+                                Container(
+                                  color: Colors.black12,
+                                  margin: EdgeInsets.only(bottom: 10.0),
+                                  padding: EdgeInsets.symmetric(
+                                      horizontal: 25.0, vertical: 15.0),
+                                  child: Text(
+                                    '${song['votes']}',
+                                    style: TextStyle(
+                                        color: Colors.black54,
+                                        fontSize: 24.0,
+                                        fontWeight: FontWeight.normal),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          );
+                        },
+                      );
+                    }),
               ),
             ],
           ),
