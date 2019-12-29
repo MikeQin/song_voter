@@ -1,6 +1,21 @@
 # Song Voter App
 
-A Flutter app that communicates with Firebase Realtime Database. 
+A Flutter app that communicates with Firebase Realtime Database.
+
+## Firebase Rules
+```
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /{document=**} {
+      allow read: if true;
+      allow create: if ("title" in request.resource.data) && ("votes" in request.resource.data);
+      allow update: if ("votes" in request.resource.data);
+      allow delete: if false;
+    }
+  }
+}
+```
 
 ## Getting Started
 
